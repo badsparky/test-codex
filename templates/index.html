@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Flask Othello</title>
+    <style>
+        table { border-collapse: collapse; }
+        td { width: 40px; height: 40px; border: 1px solid #333; text-align: center; }
+        .piece { width: 30px; height: 30px; border-radius: 50%; margin: auto; }
+        .black { background: black; }
+        .white { background: white; }
+    </style>
+</head>
+<body>
+<h1>Othello</h1>
+<p>Current Player: <span id="player">{{ 'Black' if player==1 else 'White' }}</span></p>
+<table id="board">
+{% for y in range(8) %}
+<tr>
+{% for x in range(8) %}
+    <td data-x="{{x}}" data-y="{{y}}">
+    {% if board[y][x] == 1 %}
+        <div class="piece black"></div>
+    {% elif board[y][x] == 2 %}
+        <div class="piece white"></div>
+    {% endif %}
+    </td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+<script>
+document.querySelectorAll('#board td').forEach(function(cell) {
+    cell.addEventListener('click', function() {
+        fetch('/move', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({x: cell.dataset.x, y: cell.dataset.y})
+        }).then(function(){location.reload();});
+    });
+});
+</script>
+</body>
+</html>
